@@ -1,7 +1,7 @@
 <?php
 //Info base
 $dbhost = "localhost";
-$dbuser = "rt";
+$dbuser = "mail";
 $dbpass = "rtlry";
 $db = "test";
 $user="";
@@ -29,10 +29,10 @@ if (isset($_GET["user"])){
 		}
         
 		echo "<li class=\"liste_mail\" onclick=\"afficherMail(".$donnees['id'].")\">
-							<a id=\"listeMail\"  href=\"#l\">
+							<a id=\"listeMail\" >
 								".$donnees['date']." <b>".$donnees['expediteur']."</b> : ".$apercu."".$point_fin."
 							</a>
-							<a id=\"croix\" onclick=\"supprimer(".$donnees['id'].",'".$user."')\" href=\"#\">
+							<a id=\"croix\" onclick=\"supprimer(".$donnees['id'].",'".$user."')\">
 								<span class=\"croixgauche\"></span>
                                 <span class=\"croixdroite\"></span>
 							</a>
