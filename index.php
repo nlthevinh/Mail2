@@ -1,7 +1,7 @@
 <?php
 //Info base
 $dbhost = "localhost";
-$dbuser = "rt";
+$dbuser = "mail";
 $dbpass = "rtlry";
 $db = "test";
 $user="";
@@ -20,14 +20,6 @@ catch (Exception $e)
 if (isset($_GET["user"])){
         
 		$user = $_GET["user"];
-        
-}
-
-	
-if ((isset($_POST["message"])) && (isset($_POST["dest"]))){
-        
-	$prep = $bdd->prepare('INSERT INTO messages (destinataire,expediteur,date,message) VALUES (?,?,NOW(),?)');
-	$prep->execute(array($_POST["dest"],$user,$_POST["message"]));
         
 }
 
@@ -50,8 +42,11 @@ if ((isset($_POST["message"])) && (isset($_POST["dest"]))){
 					if (xhr.readyState == 4) {
 						document.getElementById("droite").innerHTML = xhr.response;
 					}
-				}	
-			}function afficherList(user){
+				}
+				return false;
+			}
+			
+			function afficherList(user){
 				xhr = new XMLHttpRequest();
 				
 				xhr.open('GET', 'http://localhost/mail/list.php?user=' + user);
@@ -61,33 +56,29 @@ if ((isset($_POST["message"])) && (isset($_POST["dest"]))){
 						document.getElementById("gauche").innerHTML = xhr.response;
 					}
 				}	
-			}function ajouterMail(user){
-				xhr = new XMLHttpRequest();
-				
-				xhr.open('GET', 'http://localhost/mail/index.php?user=' + user);
-				xhr.send(null);
-				xhr.onreadystatechange = function() {
-					if (xhr.readyState == 4) {
-						window.location.href="index.php?user=" + user + '&id=' + id;
-					}
-				}	
+				return false;
 			}
-                
-            
 			
-			function supprimer(id,user){
+			function ajouterMail(user){
+				formElement = document.getElementById("envoi");
+				formData = new FormData(formElement)
 				xhr = new XMLHttpRequest();
-				xhr.open('DELETE', 'http://localhost/mail/index.php?user=' + user + '&idSUP=' + id);
+				xhr.open("POST", "insert.php");
+				formData.append("user",user);
+				xhr.send(formData);
+				return false;
+			}	
+
+			function supprimer(id){
+				xhr = new XMLHttpRequest();
+				xhr.open('DELETE', 'http://localhost/mail/remove.php?idSUP=' + id);
 				xhr.send(null);
 					
 				xhr.onreadystatechange = function() {
 					if (xhr.readyState == 4) {
-						window.location.href="index.php?user=" + user;
+						afficherList(user)
 					}
 				}
-                
-                var list_mail = document.getElementById("_liste_mail");
-                list_mail.removeChild(list_mail.childNodes[id_liste]);
 			}
 		</script> 
         
@@ -101,7 +92,7 @@ if ((isset($_POST["message"])) && (isset($_POST["dest"]))){
         </div>
 		
 		<div id="creation_mail" >
-			<form id="envoi" action="index.php<?php if($user!="")echo("?user=".$user."")?>" method="post">
+			<form id="envoi" method="post" onsubmit="return ajouterMail('<?php echo $user ?>')">
 				<div id="_Destinataire">
 					<label for="dest">Destinataire:  </label>
 					<input type="text" id="dest" name="dest" style="width:100%" maxlength="20"/>
@@ -109,7 +100,7 @@ if ((isset($_POST["message"])) && (isset($_POST["dest"]))){
 				<div id="_Message">
 					<label for="message">Message:  </label>
 					<input type="text" id="message" name="message"  style="width:100%" maxlength="300"/>
-					<input type="submit" value="Envoyer" <?php echo "onclick=ajouterMail(".$user.")"?> id="btnEnvoyer">
+					<input type="submit" value="Envoyer" id="btnEnvoyer">
 				</div>
 			</form>
         </div>
