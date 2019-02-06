@@ -1,7 +1,7 @@
 <?php
 //Info base
 $dbhost = "localhost";
-$dbuser = "rt";
+$dbuser = "mail";
 $dbpass = "rtlry";
 $db = "test";
 $user="";
